@@ -8,6 +8,7 @@
 % * <enet.html |dml.enet|> - native implementation of elastic net algorithm
 % * <glmnet.html |dml.glmnet|> - efficient elastic net algorithm
 % * <gridsearch.html |dml.gridsearch|> - grid search method
+% * <hmm.html |dml.hmm|> - Hidden Markov Model with discrete state and continu
 % * <lds.html |dml.lds|> - linear dynamical system
 % * <method.html |dml.method|> - abstract class for multivariate methods
 % * <naive.html |dml.naive|> - gaussian naive Bayes classifier

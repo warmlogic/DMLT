@@ -41,7 +41,7 @@ classdef circreg < dml.method
         beta          % regression coefficients for the mean
         gamma         % regression coefficients for the concentration
         
-        method = 3;   % method used to estimate model (1=standard, 2=generalized method of moments, 3=second harmonics)
+        method = 1;   % method used to estimate model (1=standard, 2=generalized method of moments, 3=second harmonics)
         
         lambda = 10;  % regularization parameter for the mean (only defined for gradient descent)
         repeat = 1;   % number of repeats for gradient descent (multiple local maxima)
@@ -127,18 +127,12 @@ classdef circreg < dml.method
             obj.beta = zeros(size(X,2),1); %1e-6*randn(size(X,2),1);
           end
           
-%           options.Method='lbfgs';
-%          % options.Method='cg';
-%           if ~obj.verbose, options.Display = 'off'; end
-%           b = obj.beta;
-%           obj.beta = minFunc(@(b)regCreg(b(:),theta,X,obj.lambda),b(:),options);
-%           %obj.beta = minFunc(@(b)regGMMreg(b(:),theta,X,obj.lambda),b(:),options);
+          if ~obj.verbose, options.Display = 'off'; end
           
           b = obj.beta;
-          warning off;
-          options.Method='cg';
-          options.MaxIter=10000;
+          options.MaxIter=1000;
           options.MaxFunEvals=10000;
+          b = [0;b];
           if obj.method==1
             obj.beta = minFunc(@(b)regCreg(b(:),theta,X,obj.lambda),b(:),options);
           elseif obj.method==2
@@ -146,7 +140,7 @@ classdef circreg < dml.method
           else
             obj.beta = minFunc(@(b)regCHreg(b(:),theta,X,obj.lambda),b(:),options);
           end
-          warning on;
+          obj.beta=obj.beta(2:end);
           
           u = X * obj.beta;
           lx = 2*atan(u); % link function
