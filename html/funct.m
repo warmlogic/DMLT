@@ -4,6 +4,7 @@
 % * <blogreg.html |dml.blogreg|> - Bayesian logistic regression
 % * <bootstrap.html |dml.bootstrap|> - bootstrapping to determine parameter relevance
 % * <circreg.html |dml.circreg|> - circular regression method
+% * <corclas.html |dml.corclas|> - template matching correlation based classifier
 % * <crossvalidator.html |dml.crossvalidator|> - crossvalidation class
 % * <enet.html |dml.enet|> - native implementation of elastic net algorithm
 % * <glmnet.html |dml.glmnet|> - efficient elastic net algorithm

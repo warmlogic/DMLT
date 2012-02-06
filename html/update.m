@@ -25,7 +25,11 @@ cd(ds);
 for i=1:length(D)
   nme = D(i).name(1:(end-2));
   s = help2html(['dml.' nme]);  
-  fid = fopen(fullfile(d,[nme '.html']),'w');
+  fname = fullfile(d,[nme '.html']);
+  if ~exist(fname)
+    fprintf('added %s.html\n',nme);
+  end
+  fid = fopen(fname,'w');
   fprintf(fid,'%s',s);
   fclose(fid);
 end
