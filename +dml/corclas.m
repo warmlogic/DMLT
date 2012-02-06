@@ -7,15 +7,15 @@ classdef corclas < dml.method
 %   corresponds to the template with which the sample has the highest
 %   correlation.
 %
-%   REFERENCE
-%   Distributed and overlapping representations of faces and objects in
-%   ventral temporal cortex by J. V. Haxby et al.
-%
 %   EXAMPLE
 %   X = rand(10,20); Y = [1 1 1 1 1 2 2 2 2 2]';
 %   m = dml.corclas;
 %   m = m.train(X,Y);
 %   Z = m.test(X);
+%
+%   REFERENCE
+%   Distributed and overlapping representations of faces and objects in
+%   ventral temporal cortex by J. V. Haxby et al.
 %
 %   DEVELOPER
 %   Ali Bahramisharif (ali@cs.ru.nl)
@@ -58,7 +58,7 @@ classdef corclas < dml.method
             %
             % m.template
 
-            m=obj.template;
+            m.template=obj.template;
         end
     end
 end

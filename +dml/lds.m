@@ -2,7 +2,6 @@ classdef lds < dml.method
 %LDS linear dynamical system. 
 %
 %   DESCRIPTION
-%
 %   data X is represented as trials x features x timepoints
 %
 %   State can be partially observed/unobserved during training.
@@ -19,7 +18,6 @@ classdef lds < dml.method
 %   X and Y are swapped wrt the Kalman filter conventions
 %
 %   EXAMPLE
-%
 %   rand('seed',2); randn('seed',2);
 % 
 %   nsamples = 1000; ncov = 2; ncycles = 10; ntrials = 2; 

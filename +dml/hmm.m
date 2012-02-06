@@ -2,15 +2,12 @@ classdef hmm < dml.method
 % HMM Hidden Markov Model with discrete state and continuous observations.
 % 
 % DESCRIPTION
-%
 % input X is of size repetitions x features x timepoints
-%
 % note:
 % - nhidden specifies the number of hidden states; this is used only when Y
 %   is absent or NaN
 %
 % EXAMPLE
-%
 % rand('seed',3); randn('seed',3);
 % 
 % nsamples = 1000; ncov = 10; ncycles = 10;
