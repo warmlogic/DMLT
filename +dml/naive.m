@@ -48,6 +48,13 @@ classdef naive < dml.method
         return;
       end
       
+      % multiple outputs
+      if size(Y,2) > 1
+        obj = dml.noutput('method',obj);
+        obj = obj.train(X,Y);
+        return;
+      end
+      
       % at least two classes
       nclasses = max(2,max(Y));
       nfeatures = size(X,2);

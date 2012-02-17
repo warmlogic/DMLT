@@ -5,7 +5,9 @@ function [K,C,R,a] = prior(dims,strength,varargin)
 %   input:
 %   dims = the dimensions [D1 ... DN] of the measured space (e.g., X x Y x Z x T)
 %   strength = n vector [I1 ... IN] specifying the strengths within each
-%   dimension (the non-zero off-diagonal elements)
+%   dimension (the non-zero off-diagonal elements); NOTE: negative strengths give
+%   positive correlations; positive strengths give negative correlations
+%   and therefore more complex patterns
 %
 %   options:
 %   'mask' is an optional boolean array specifying which index elements 
@@ -23,8 +25,14 @@ function [K,C,R,a] = prior(dims,strength,varargin)
 %   correlation matrix R
 %   average correlation between neighbouring elements a
 %
+%   EXAMPLE
+%   [K,C,R,a] = dml.prior([28 28],[-100 -100]);
+%   imagesc(reshape(R(14*28+8,:),[28 28])); axis square; colorbar
+%   [K,C,R,a] = dml.prior([28 28],[100 100]);
+%   imagesc(reshape(R(14*28+8,:),[28 28])); axis square; colorbar
+%
 %   NOTE
-%   allow neighbourhood structure
+%   allow neighbourhood structure in the implementation
 %
 %   DEVELOPER
 %   Marcel van Gerven (m.vangerven@donders.ru.nl)

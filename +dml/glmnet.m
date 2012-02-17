@@ -63,6 +63,13 @@ classdef glmnet < dml.method
       % missing data
       if any(isnan(X(:))) || any(isnan(Y(:))), error('method does not handle missing data'); end
       
+       % multiple outputs
+      if size(Y,2) > 1
+        obj = dml.noutput('method',obj);
+        obj = obj.train(X,Y);
+        return;
+      end
+      
       % convert data to double (otherwise we get numerical problems)
       if ~isa(X(1),'double'), X = double(X); end
       if ~isa(Y(1),'double'), Y = double(Y); end

@@ -86,7 +86,10 @@ classdef sopls < dml.method
         
       elseif strcmp(obj.method,'opls') % orthonormalized partial least squares
         
-        [obj.Q,obj.P,bias,obj.G] = opls(X',Y',obj.nhidden);
+        [obj.Q,obj.P] = opls([X ones(size(X,1),1)]',Y',obj.nhidden);
+        
+        obj.C = obj.P(end,:) * obj.Q';
+        obj.P = obj.P(1:(end-1),:);
       
       else % Matlab's partial least squares (SIMPLS algorithm)
         
@@ -104,6 +107,17 @@ classdef sopls < dml.method
 
       Y = bsxfun(@plus,X * obj.P(:,1:obj.nhidden) * obj.Q(:,1:obj.nhidden)',obj.C);
        
+    end
+    
+    function m = model(obj)
+      % returns
+      %
+      % m.weights regression weights (P*Q')
+      % m.bias bias term
+      
+      m.weights = obj.P(:,1:obj.nhidden) * obj.Q(:,1:obj.nhidden)';
+      m.bias = obj.C;
+      
     end
     
   end

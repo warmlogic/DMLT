@@ -101,21 +101,11 @@ m = dml.naive;
 m = m.train({X1 X1},{Y1 Y1});
 Z = m.test({X2 X2});
 %%
-% This is of use when we want to process multiple datasets in parallel or
+% This is only of use when we want to process multiple datasets in parallel or
 % combine the data as in multitask learning. This calling convention
 % presupposes that a method knows how to deal with multiple datasets. This
 % is facilitated by using the dml.ndata class (see dml.naive for an
 % example of its use).
-
-%% Multidimensional input
-% We assume our data is of the form N x K or N x K x T while often our
-% input data has a particular structure. Each method m has an m.indims
-% field which we can use to specify this structure. That is, given m.indims
-% = [X1 ... Xn], internally our data representation will take the form N x
-% X1 x ... x Xn or N x X1 x ... x Xn x T. This is used, for instance, by
-% the dml.searchlight method, which uses indims to traverse feature space
-% in a particular way (see examples).
-
 
 %% Time series analysis
 % Methods who use input data of the form N x K assume that all data within

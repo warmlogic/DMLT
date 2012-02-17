@@ -1,4 +1,4 @@
-function [A,B,Ypredict] = bls(X,Y,nhidden,algorithm)
+function [A,B,Ypredict] = opls(X,Y,nhidden,algorithm)
 % BLS  Bottleneck least squares aka sparse orthogonalized least squares
 %
 % X: ninput x nsamples input data matrix

@@ -21,6 +21,8 @@ function s = statistic(stat,D,P)
 %   'tlin'        : t-linear statistic to measure goodness of fit for
 %                   circular data with angles specified in radians 
 %                   using fisher's correlation coefficient.
+%   'R2'          : squared correlation; explained variance in the linear regression case
+%   'identity'    : computes the proportion of trials that are identified correctly 
 %
 %   NOTE: notation '-x' with x one of the above is also allowed. This way
 %   error measures such as 'MAD' can be used as a performance measure by
@@ -57,7 +59,7 @@ function s = statistic(stat,D,P)
         s = s + log(P(j,D(j)));
       end
       
-    case 'correlation'
+    case {'correlation','R2'}
       
       s = ones(1,nvars);
       idx = find(~all(D == P));
@@ -65,6 +67,10 @@ function s = statistic(stat,D,P)
         s(idx(i)) = corr(D(:,idx(i)),P(:,idx(i)));
       end
       s(isnan(s)) = 0;
+      
+      if strcmp(stat,'R2')
+        s = s.^2;
+      end
       
     case 'contingency'
       
@@ -98,8 +104,16 @@ function s = statistic(stat,D,P)
     case 'tlin'
       
       n=length(P);
-      s=4*(sum(cos(P).*cos(D))*sum(sin(P).*sin(D))-sum(cos(P).*sin(D))*sum(sin(P).*cos(D)))/sqrt((n.^2-sum(cos(2*P)).^2-sum(sin(2*P)).^2)*(n.^2-sum(cos(2*D)).^2-sum(sin(2*D)).^2));
-
+      s=4*(sum(cos(P).*cos(D))*sum(sin(P).*sin(D))-sum(cos(P).*sin(D))*sum(sin(P).*cos(D)))/sqrt((n.^2-sum(cos(2*P)).^2-sum(sin(2*P)).^2)*(n.^2-sum(cos(2*D)).^2-sum(sin(2*D)).^2));   
+      
+    case 'identity'
+      
+      % compute number of correctly identified trials by inspecting the
+      % correlation between actual and predicted output
+      
+      [a,b] = max(corr(P',D'));
+      s = mean(b==1:size(P,1));
+      
     otherwise
       error('unknown statistic %s',stat);
       
