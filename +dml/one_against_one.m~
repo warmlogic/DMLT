@@ -20,7 +20,7 @@ classdef one_against_one < dml.method
     
     nclasses % number of classes
     
-    combfun = 'borda'; % 'majority' takes majority vote; 'borda' count sums outputs
+    combfun = 'majority'; % 'majority' takes majority vote; 'borda' count sums probabilities
     
     % balance the data such that both classes are evenly represented during
     % training (note that there may still be an imbalance during testing!)
@@ -135,16 +135,16 @@ classdef one_against_one < dml.method
       % combine the result
       if strcmp(obj.combfun,'majority')
         
-        Z = (Y{1} == repmat(max(Y{1},[],2),[1 size(Y{1},2)]));
+        Z = Y{1};
         for j=2:length(Y)
-          Z = Z + (Y{j} == repmat(max(Y{j},[],2),[1 size(Y{j},2)]));
+          Z = Z + Y{j};
         end
         Y = bsxfun(@rdivide,Z,sum(Z,2));
         
         
       elseif strcmp(obj.combfun,'borda')
         
-        % borda count; rank candidates by summing and normalizing
+        % borda count; rank candidates by summing and normalizing probabilities
 
         Z = Y{1};
         for j=2:length(Y)

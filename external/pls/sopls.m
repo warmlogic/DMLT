@@ -1,4 +1,4 @@
-function [A,B,C,G] = sopls(X,Y,nhidden,reg)
+function [A,B,C,G] = sopls(X,Y,nhidden,reg,verbose)
 % SOPLS  Sparse orthogonalized partial least squares where the elastic
 % net is implemented using either a native implementation or the glmnet package
 %
@@ -26,6 +26,7 @@ function [A,B,C,G] = sopls(X,Y,nhidden,reg)
 
 if nargin < 3, nhidden = 1; end
 if nargin < 4, error('please specify regularizer'); end
+if nargin < 5, verbose = false; end
 
 ninput = size(X,1);
 noutput = size(Y,1);
@@ -42,11 +43,17 @@ if nhidden > 1,
     B = zeros(ninput,nhidden);
     C = zeros(1,nhidden);
     for i=1:nhidden,
-        [A(:,i),B(:,i),C(i),G{i}] = sopls(X,R,1,reg);
-        if i < nhidden,    % deflate
-            Z = B(:,i)'*X + C(i); % hidden activations
-            R = R - A(:,i)*Z; % Y activations after deflation
-        end
+      
+      if verbose
+        fprintf('learning hidden variable %d of %d\n',i,nhidden);
+      end
+      
+      [A(:,i),B(:,i),C(i),G{i}] = sopls(X,R,1,reg);
+      if i < nhidden,    % deflate
+        Z = B(:,i)'*X + C(i); % hidden activations
+        R = R - A(:,i)*Z; % Y activations after deflation
+      end
+      
     end
 else
 

@@ -20,7 +20,7 @@ classdef one_against_rest < dml.method
 
     nclasses % number of classes
     
-    combfun = 'borda' % 'borda' borda count
+    combfun = 'wta'; % 'wta' winner-takes-all, 'borda' borda count
   end
   
   methods
@@ -54,30 +54,28 @@ classdef one_against_rest < dml.method
       % create new data representation
       for i=1:obj.nclasses
         
+        didx = (Y == i);
+        
+        data{i} = X;
         design{i} = nan(size(Y,1),1);
         
-        didx = (Y == i);
         ndidx = find(~didx);
 
         % downsample
-        rand('seed',1); randn('seed',1);
-        prm = randperm(numel(ndidx));
-        design{i}(ndidx(prm(1:min(numel(prm),sum(didx)))),:) = 1;
-        design{i}(didx,:)  = 2;
-        data{i} = X;
-        data{i} = data{i}(~isnan(design{i}),:);
-        design{i} = design{i}(~isnan(design{i}),:);
+%         prm = randperm(numel(ndidx));
+%         design{i}(ndidx(prm(1:min(numel(prm),sum(didx)))),:) = 1;
+%         design{i}(didx,:)  = 2;
          
         % upsample
-%         didx = find(didx);
-%         didx = repmat(didx,[ceil(numel(ndidx)/numel(didx)) 1]);
-%         didx = didx(1:numel(ndidx));
-%         design{i}(1:numel(didx)) = 1;
-%         design{i}(numel(didx)+(1:numel(ndidx))) = 2;
-%         data{i} = X(cat(1,didx,ndidx),:);
+
+        data{i} = data{i}(~isnan(design{i}),:);
+        design{i} = design{i}(~isnan(design{i}),:);
         
       end
-       
+      
+      % alternative would be to resample the target class such that it is
+      % balanced against the rest...
+      
       % replicate the classifier
       if ~iscell(obj.mva)
         procedure = obj.mva;
@@ -114,7 +112,18 @@ classdef one_against_rest < dml.method
       end
       
       % combine the result
-      if strcmp(obj.combfun,'borda')
+      if strcmp(obj.combfun,'wta')
+
+        % winner takes all TO DO; NOTE SVM => OUTPUT FUNCTION; CHECK TONG
+        
+        Z = zeros(size(Y{1},1),length(Y));
+        for j=1:length(Y)
+          Z(:,j) = Y{j}(:,2);
+        end
+        % normalize
+        Y = bsxfun(@rdivide,Z,sum(Z,2));
+        
+      elseif strcmp(obj.combfun,'borda')
         
         % borda count
         

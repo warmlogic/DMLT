@@ -27,6 +27,8 @@ classdef svm < dml.method
     Ktrain % precomputed kernel for training data
     Ktest  % precomputed kernel for test data
     
+    distance = false; % return distance from decision boundary instead of class label
+    
   end
   
   methods
@@ -81,10 +83,17 @@ classdef svm < dml.method
       
       probs = obj.Ktest * obj.dual(1:end-1) + obj.dual(end);
       
-      % post is just the sign and does not have a probabilistic interpretation
       Y = zeros(numel(probs),2);
-      Y(:,1) = (probs < 0);
-      Y(:,2) = (probs > 0);
+      if obj.distance
+      
+        Y(probs<0,1) = abs(probs(probs<0));
+        Y(probs>0,2) = abs(probs(probs>0));
+      
+      else
+        % post is just the sign and does not have a probabilistic interpretation
+        Y(:,1) = (probs < 0);
+        Y(:,2) = (probs > 0);
+      end
       
     end
 
