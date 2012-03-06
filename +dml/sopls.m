@@ -80,10 +80,13 @@ classdef sopls < dml.method
         
       if ~isempty(obj.P) && obj.nhidden < size(obj.P,2)
         % used when performing a grid search
-        % grid search needs to count down from maximum nhidden
+        % NOTE: grid search needs to count down from maximum nhidden
         obj.P = obj.P(:,1:obj.nhidden);
         obj.Q = obj.Q(:,1:obj.nhidden);
-        obj.G = obj.G(1:obj.nhidden);
+        if ~isempty(obj.G)
+          obj.G = obj.G(1:obj.nhidden);
+        end
+        obj.C = obj.P(end,:) * obj.Q';
         
       else
       
@@ -95,7 +98,7 @@ classdef sopls < dml.method
           
         elseif strcmp(obj.method,'opls') % orthonormalized partial least squares
           
-          [obj.Q,obj.P] = opls([X ones(size(X,1),1)]',Y',obj.nhidden,obj.verbose);
+          [obj.Q,obj.P] = opls([X ones(size(X,1),1)]',Y',obj.nhidden);
           
           obj.C = obj.P(end,:) * obj.Q';
           obj.P = obj.P(1:(end-1),:);

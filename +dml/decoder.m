@@ -91,8 +91,8 @@ classdef decoder < dml.method
     function Y = test(obj,X)
 
       % get encoding parameters
-      V = obj.encoder.filters;
-      if isempty(V), V=1; end
+      J = obj.encoder.filters;
+      if isempty(J), J=1; end
       B = obj.encoder.B;
       b0 = obj.encoder.b0;
       Sigma = obj.encoder.Sigma;
@@ -111,17 +111,15 @@ classdef decoder < dml.method
                   
       SB = Sigma \ B';
       
-      U = -0.5 * B * SB;
-      
       iR = inv(obj.R);
       iRm = obj.R \ obj.mu;
 
-      Y = zeros(size(X,1),size(V*U*V',1));
+      Y = zeros(size(X,1),size(J*B,1));
       for j=1:size(X,1)
         
         c = transpose((X(j,idx) - b0) * SB);
         
-        Y(j,:) = (iR - 2*V*U*V') \ (V*c + iRm);
+        Y(j,:) = (iR + J*B*SB*J') \ (J*c + iRm);
                 
       end
       

@@ -40,9 +40,11 @@ classdef corclas < dml.method
             for i=1:nclasses
                 obj.template(i,:)=mean(X(Y==i,:),1);
             end
+            
         end
 
         function Y = test(obj,X)
+          
             o=zeros(size(obj.template,1),size(X,1));
             for i=1:size(obj.template,1)
                 for j=1:size(X,1)
@@ -59,6 +61,7 @@ classdef corclas < dml.method
             % m.template
 
             m.template=obj.template;
+            
         end
     end
 end

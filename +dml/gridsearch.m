@@ -165,7 +165,7 @@ classdef gridsearch < dml.method
              
              vld = vld.train(X,Y);
              
-             obj.outcome(i) = vld.statistic;
+             obj.outcome(i) = mean(vld.statistic);
              
              obj.models{i} = vld.model;
              

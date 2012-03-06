@@ -31,6 +31,8 @@ classdef encoder < dml.method
     
     b0; % regressor bias
     
+    m % regression model
+    
   end
   
   methods
@@ -50,6 +52,7 @@ classdef encoder < dml.method
         [X,obj.filters] = obj.encode(X);
       end
       
+      N = size(Y,1); % number of samples
       nvoxels = size(Y,2);
       nfeatures = size(X,2);
         
@@ -71,23 +74,37 @@ classdef encoder < dml.method
           K = dml.prior([res res],[-10 -10]);
           reg = dml.gridsearch('validator',dml.crossvalidator('type','split','stat','-RMS','mva',dml.enet('L2',K,'family','gaussian','restart',false)),'vars','L1','vals',v);
           
-        case {'opls','sopls'}
+        case {'opls','sopls','csopls'}
           
           if strcmp(obj.regressor,'opls')
+            
             m = dml.sopls('method','opls','restart',false);
-          else
+
+          elseif strcmp(obj.regressor,'sopls')
+          
             m = dml.sopls('method','sopls','restart',false,'verbose',true);
+          
+          else
+            
+            res = sqrt(size(X,2));
+            v = dml.enet.lambdapath(X,nanmean(Y,2),'gaussian',50,1e-3);
+            K = dml.prior([res res],[-10 -10]);
+            e = dml.gridsearch('verbose',true,'validator',dml.crossvalidator('type','split','stat','-RMS','mva',dml.enet('L2',K,'family','gaussian','restart',false)),'vars','L1','vals',v);
+            m = dml.sopls('method','sopls','restart',false,'verbose',true,'regularizer',e);
+            
           end
           
-          reg = dml.gridsearch('validator',dml.crossvalidator('type','split','stat','identity','mva',m),'vars','nhidden','vals',5:-1:1);
+          % use MEAN -RMS error as criterion
+          reg = dml.gridsearch('validator',dml.crossvalidator('type','split','stat','-RMS','mva',m),'vars','nhidden','vals',20:-1:1,'verbose',true);
           reg = reg.train(X,Y);
           
           obj.B = reg.mva.method{1}.Q';
           obj.filters = reg.mva.method{1}.P;
-          %obj.B = reg.model.weights;
           obj.b0 = reg.model.bias;
           obj.Sigma = zeros(nvoxels,nvoxels);
-          obj.Sigma(1:(nvoxels+1):end) = mean((reg.test(X) - Y).^2);
+          
+          df = 1; % depends on number of free parameters
+          obj.Sigma(1:(nvoxels+1):end) = sum((reg.test(X) - Y).^2) / (N-df);
           
         otherwise
   
@@ -95,13 +112,14 @@ classdef encoder < dml.method
       
       end
 
-      if ~any(strcmp(obj.regressor,{'opls' 'sopls'}))
+      if ~any(strcmp(obj.regressor,{'opls' 'sopls' 'csopls'}))
       
         % train from output to input; e.g. from image to brain data
         % we do not use noutput since this requires storage of everything
         obj.Sigma = zeros(nvoxels,nvoxels);
         obj.B = zeros(nfeatures,nvoxels);
         obj.b0 = zeros(1,nvoxels);
+        
         for i=1:nvoxels
           
           if obj.verbose
@@ -110,9 +128,11 @@ classdef encoder < dml.method
           
           enc = reg.train(X,Y(:,i));
           
-          % compute variance on training set !!! this should officially be done on a validation set !!!
-          % maybe we can do something smarter here wrt non-diagonal covariances
-          obj.Sigma(i,i) = mean((enc.test(X) - Y(:,i)).^2);
+          % compute degrees of freedom
+          df = 1;
+          
+          % compute variance on training set
+          obj.Sigma(i,i) = sum((enc.test(X) - Y(:,i)).^2) / (N - df);
           
           % get all encoder weights; assumes model.weights is defined and
           % assumes that the encoder makes use of noutput to generate n outputs
@@ -125,12 +145,16 @@ classdef encoder < dml.method
         
       end
       
+      obj.m = reg; % expensive; useful for debugging
+      
     end
     
     function Y = test(obj,X)
       
       % squeeze the input through the encoding model
-      X = obj.encode(X);
+      if ~isempty(obj.filters)
+        X = obj.encode(X);
+      end
       
       nvoxels = size(obj.B,2);
       for i=1:nvoxels
@@ -198,7 +222,12 @@ classdef encoder < dml.method
       res = sqrt(size(F,1));
       for i=1:size(F,2)
 
-        imagesc(reshape(F(:,i),[res res]));
+        m = max(abs(F(:,i)));
+        if m
+          imagesc(reshape(F(:,i),[res res]),[-m m]);
+        else
+          imagesc(reshape(F(:,i),[res res]));
+        end
         axis square;
         colormap(gray);
         drawnow;
