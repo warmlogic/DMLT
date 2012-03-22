@@ -153,8 +153,10 @@ classdef crossvalidator
           end
                     
           tproc = obj.mva{f}.train(trainX,trainY);
-          obj.result{f} = tproc.test(testX);
-          obj.design{f} = testY;
+          if ~isempty(testY)
+            obj.result{f} = tproc.test(testX);
+            obj.design{f} = testY;
+          end
           obj.model{f} = tproc.model();
               
           if ~obj.compact, obj.mva{f} = tproc; end
