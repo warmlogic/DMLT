@@ -79,7 +79,7 @@ classdef naive < dml.method
         obj.S(k,:) = obj.S(k,:) + nansum(X(Y == k,:),1);
         
         % estimate class-conditional sum of squares
-        mu = obj.S ./ obj.n;
+        mu = obj.S(k,:) ./ obj.n(k,:);
        
         if binit
         
@@ -88,8 +88,8 @@ classdef naive < dml.method
         else
           % use Eq 1.4 in UPDATING FORMULAE AND A PAIRWISE ALGORITHM FOR COMPUTING SAMPLE VARIANCES
           % by Tony F. Chan Gene H. Golub Randall J. LeVeque
-          obj.SS(k,:) = obj.SS(k,:) + nansum(bsxfun(@minus,X(Y==k,:),mu(k,:)).^2,1) - ...
-            bsxfun(@rdivide,(nansum(bsxfun(@minus,X(Y==k,:),mu(k,:)),1).^2),obj.n(k,:));
+          obj.SS(k,:) = obj.SS(k,:) + nansum(bsxfun(@minus,X(Y==k,:),mu).^2,1) - ...
+            bsxfun(@rdivide,(nansum(bsxfun(@minus,X(Y==k,:),mu),1).^2),obj.n(k,:));
         end
         
       end
