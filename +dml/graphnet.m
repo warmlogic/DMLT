@@ -187,6 +187,7 @@ classdef graphnet < dml.method
           if mod(ceil(i/tdim(d)),dims(d)) ~= 0
             
             nbr = i + tdim(d);
+            
             if nbr <= nfeatures
               K(i,nbr) = -1;
             end
