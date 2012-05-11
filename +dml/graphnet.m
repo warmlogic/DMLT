@@ -107,8 +107,7 @@ classdef graphnet < dml.method
             obj.conv = c;
           end
           obj.weights = [beta; beta0]';
-          
-          
+                    
         otherwise
           
           error('unrecognized type');
