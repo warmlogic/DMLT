@@ -6,6 +6,9 @@
  * compile with mex -largeArrayDims fastinvre64.c
  *
  * Marcel van Gerven, 2009
+ *
+ * 01-06-2012: Memory leak fixed by Tomi Peltola
+ *
  */
 
 /* the gateway function */

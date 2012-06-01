@@ -15,7 +15,7 @@ classdef graphnet < dml.method
 %
 %   EXAMPLE
 %   X = rand(10,20); Y = [1 1 1 1 1 2 2 2 2 2]';
-%   m = dml.enet
+%   m = dml.graphnet
 %   m = m.train(X,Y);
 %   Z = m.test(X);
 %
