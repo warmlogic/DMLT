@@ -14,7 +14,7 @@ classdef graphnet < dml.method
 %   multivariate models for regression and classification of whole-brain fMRI data. stanford.edu. 
 %
 %   EXAMPLE
-%   X = rand(10,20); Y = [1 1 1 1 1 2 2 2 2 2]';
+%   X = rand(10,20); Y = [1 1 1 1 1 2 2 2 2 2]'; 
 %   m = dml.graphnet
 %   m = m.train(X,Y);
 %   Z = m.test(X);
