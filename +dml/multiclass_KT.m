@@ -8,7 +8,7 @@ classdef multiclass_KT < dml.method
 %   REFERENCE
 %   Kamitani Y, Tong F. Decoding seen and attended motion directions from
 %   activity in the human visual cortex. Curr. Biol. 2006
-%   Jun;16(11):1096?102.
+%   Jun; 16(11):1096?102.
 %
 %   Kamitani Y, Tong F. Decoding the visual and subjective contents of the
 %   human brain. Nat. Neurosci. 2005;8(5):679?85.
